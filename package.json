@@ -1,15 +1,13 @@
 {
   "name": "dynamic-route-creation",
   "version": "1.0.0",
-  "description": "",
+  "description": "Dynamically generate REST endpoints for your application",
   "main": "index.js",
-  "author": "",
-  "license": "ISC",
+  "author": "Jack Thomson",
+  "license": "MIT",
   "dependencies": {
+    "chalk": "^2.3.2",
     "express": "^4.16.2",
     "mongoose": "^5.0.8"
-  },
-  "devDependencies": {
-    "chalk": "^2.3.2"
   }
 }
