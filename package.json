@@ -2,8 +2,16 @@
   "name": "route-generation",
   "version": "1.0.0",
   "description": "Generate REST endpoints for your application dynamically",
-  "main": "index.js",
-  "author": "Jack Thomson",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jackthomsonn/route-generation.git"
+  },
+  "keywords": [
+    "rest",
+    "api",
+    "dynamic",
+    "generate"
+  ],
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.2",
