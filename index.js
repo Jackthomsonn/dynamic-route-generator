@@ -83,11 +83,14 @@ class RouteGenerator {
         } else {
           route.methods.forEach(method => {
             switch (method) {
+              case 'post':
+                this.buildPostRoute(method, route)
+                break
               case 'get':
                 this.buildGetRoute(method, route)
                 break
-              case 'post':
-                this.buildPostRoute(method, route)
+              case 'put':
+                this.buildPutRoute(method, route)
                 break
               case 'delete':
                 this.buildDeleteRoute(method, route)
@@ -101,12 +104,26 @@ class RouteGenerator {
     }
   }
 
+  buildPostRoute(method, route) {
+    this.generatedRoutes[method](route.uri, this.getHandlersForRoute(route), (req, res) => {
+      route.model.create(req.body).then(() => {
+        res.status(200).send({
+          message: 'Document created'
+        })
+      }).catch((err) => {
+        res.status(400).send({
+          message: err.message
+        })
+      })
+    })
+  }
+
   buildGetRoute(method, route) {
     this.generatedRoutes[method](route.uri, this.getHandlersForRoute(route), (req, res) => {
       route.model.find({}, (err, documents) => {
         if (err) {
           res.status(400).send({
-            message: err
+            message: err.message
           })
         }
 
@@ -119,22 +136,21 @@ class RouteGenerator {
         res.status(200).send(document)
       }).catch((err) => {
         res.status(400).send({
-          message: 'No document exists with that id'
+          message: err.message
         })
       })
     })
   }
 
-  buildPostRoute(method, route) {
-    this.generatedRoutes[method](route.uri, this.getHandlersForRoute(route), (req, res) => {
-      route.model.create(req.body).then(() => {
+  buildPutRoute(method, route) {
+    this.generatedRoutes[method](route.uri + '/:id', this.getHandlersForRoute(route), (req, res) => {
+      route.model.findOneAndUpdate({ _id: req.params.id }, req.body, { overwrite: true, runValidators: true }).then(() => {
         res.status(200).send({
-          message: 'Document created'
+          message: 'Document updated'
         })
       }).catch((err) => {
-        res.status(400).send({
-          message: 'Document could not be created',
-          reason: err.message
+        res.status(404).send({
+          message: err.message
         })
       })
     })
@@ -148,7 +164,7 @@ class RouteGenerator {
         })
       }).catch((err) => {
         res.status(404).send({
-          message: 'No document exists with that id'
+          message: err.message
         })
       })
     })
