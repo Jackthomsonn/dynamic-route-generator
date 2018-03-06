@@ -1,21 +1,78 @@
 const { Router } = require('express')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 const chalk = require('chalk')
 
-class DynamicRouteCreation {
-  constructor(routesToGenerate) {
+class RouteGenerator {
+  constructor(options) {
+    this.options = options
     this.generatedRoutes = Router()
-    this.routesToGenerate = routesToGenerate
     this.instantiate()
   }
 
   instantiate() {
-    if (!this.routesToGenerate || this.routesToGenerate.length === 0) {
-      this.errorHandler('You must provide at least one route that you wish to create')
-    } else {
-      this.routesToGenerate.forEach(route => {
-        this.createRoute(route)
-      })
+    try {
+      if (this.appInstanceIsPresent() && this.routesArePresent()) {
+        this.setDefaults()
+
+        this.options.routes.forEach(route => this.createRoute(route))
+      }
+    } catch (error) {
+      this.errorHandler(error)
     }
+  }
+
+  uriPathIsPresent(route) {
+    if (!route.uri) {
+      throw ('Your route needs a uri')
+    }
+
+    return true
+  }
+
+  routeModelIsPresent(route) {
+    if (!route.model) {
+      throw ('Your route needs a model')
+    }
+
+    return true
+  }
+
+  appInstanceIsPresent() {
+    if (!this.options.app || typeof this.options.app !== 'function') {
+      throw ('Your must provide an instance of your application to assign routes to')
+    }
+
+    return true
+  }
+
+  routesArePresent() {
+    if (!this.options.routes || this.options.routes.length === 0) {
+      throw ('Your must provide at least one route')
+    }
+
+    return true
+  }
+
+  setDefaults() {
+    this.options.app.use(bodyParser.json())
+    this.setBaseUri()
+  }
+
+  setBaseUri() {
+    if (this.options.baseUri) {
+      this.options.app.use(this.options.baseUri, this.generatedRoutes)
+    } else {
+      this.options.app.use('/api', this.generatedRoutes)
+    }
+  }
+
+  getHandlersForRoute(route) {
+    if (!route.handlers || route.handlers.length === 0) {
+      return []
+    }
+
+    return route.handlers
   }
 
   createRoute(route) {
@@ -45,7 +102,7 @@ class DynamicRouteCreation {
   }
 
   buildGetRoute(method, route) {
-    this.generatedRoutes[method](route.uri, (req, res) => {
+    this.generatedRoutes[method](route.uri, this.getHandlersForRoute(route), (req, res) => {
       route.model.find({}, (err, documents) => {
         if (err) {
           res.status(400).send({
@@ -69,7 +126,7 @@ class DynamicRouteCreation {
   }
 
   buildPostRoute(method, route) {
-    this.generatedRoutes[method](route.uri, (req, res) => {
+    this.generatedRoutes[method](route.uri, this.getHandlersForRoute(route), (req, res) => {
       route.model.create(req.body).then(() => {
         res.status(200).send({
           message: 'Document created'
@@ -84,7 +141,7 @@ class DynamicRouteCreation {
   }
 
   buildDeleteRoute(method, route) {
-    this.generatedRoutes[method](route.uri + '/:id', (req, res) => {
+    this.generatedRoutes[method](route.uri + '/:id', this.getHandlersForRoute(route), (req, res) => {
       route.model.remove({ _id: req.params.id }).then(() => {
         res.status(200).send({
           message: 'Document removed'
@@ -97,25 +154,9 @@ class DynamicRouteCreation {
     })
   }
 
-  uriPathIsPresent(route) {
-    if (!route.uri) {
-      throw ('Your route needs a uri')
-    }
-
-    return true
-  }
-
-  routeModelIsPresent(route) {
-    if (!route.model) {
-      throw ('Your route needs a model')
-    }
-
-    return true
-  }
-
   errorHandler(message) {
     console.log(chalk.blue.bold('Dynamic Route Creation Plugin Error: ') + chalk.red.bold(message))
   }
 }
 
-module.exports = DynamicRouteCreation
+module.exports = { RouteGenerator }

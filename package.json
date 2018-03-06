@@ -1,11 +1,12 @@
 {
-  "name": "dynamic-route-creation",
+  "name": "route-generation",
   "version": "1.0.0",
-  "description": "Dynamically generate REST endpoints for your application",
+  "description": "Generate REST endpoints for your application dynamically",
   "main": "index.js",
   "author": "Jack Thomson",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "chalk": "^2.3.2",
     "express": "^4.16.2",
     "mongoose": "^5.0.8"
