@@ -1,12 +1,9 @@
-import Router from 'express'
-import bodyParser from 'body-parser'
-import mongoose from 'mongoose'
-import chalk from 'chalk'
+const { Router } = require('express')
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const chalk = require('chalk')
 
 class RouteGenerator {
-  private options: any
-  private generatedRoutes: any
-
   constructor(options) {
     this.options = options
     this.generatedRoutes = Router()
@@ -178,4 +175,4 @@ class RouteGenerator {
   }
 }
 
-export = { RouteGenerator }
+module.exports = { RouteGenerator }
