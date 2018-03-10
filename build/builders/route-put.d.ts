@@ -1,8 +1,6 @@
-import { IRoute } from './../interfaces/IRoute';
-import { RouteBuilder } from "../route-builder";
-import { IOptions } from '../interfaces/IOptions';
+import { RouteBuilder } from '../route/route-builder';
 declare class BuildPutRoute extends RouteBuilder {
-    constructor(method: string, route: IRoute, options: IOptions);
+    constructor(method: string, route: IRouteGenerator.IRoute, options: IRouteGenerator.IOptions);
     buildPutRoute(): void;
 }
 export { BuildPutRoute };

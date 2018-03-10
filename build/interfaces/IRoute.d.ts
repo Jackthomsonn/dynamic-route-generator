@@ -1,6 +1,7 @@
-export interface IRoute {
-    uri: string;
-    model: any;
-    methods: Array<any>;
-    handlers: Array<Function>;
+declare namespace IRouteGenerator {
+    interface IRoute {
+        uri: string;
+        model: any;
+        methods: Array<IRouteGenerator.IMethod>;
+    }
 }

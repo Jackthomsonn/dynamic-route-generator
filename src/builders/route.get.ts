@@ -1,16 +1,14 @@
-import { Request, Response } from 'express';
-import { IRoute } from './../interfaces/IRoute';
-import { RouteBuilder } from "../route-builder"
-import { IOptions } from '../interfaces/IOptions';
+import { Request, Response } from 'express'
+import { RouteBuilder } from '../route/route-builder'
 
 class BuildGetRoute extends RouteBuilder {
-  constructor(method: string, route: IRoute, options: IOptions) {
+  constructor(method: string, route: IRouteGenerator.IRoute, options: IRouteGenerator.IOptions) {
     super(method, route, options)
     this.buildGetRoute()
   }
 
   public buildGetRoute() {
-    (<any>this.generatedRoutes)[this.method]([this.route.uri, this.route.uri + '/:id'], this.getHandlersForRoute(this.route), (req: Request, res: Response) => {
+    (this.generatedRoutes as any)[this.method]([this.route.uri, this.route.uri + '/:id'], this.getHandlersForRoute(this.route, 'get'), (req: Request, res: Response) => {
       if (req.params && req.params.id) {
         this.route.model.findById(req.params.id).then((document: Document) => {
           res.status(200).send(document)

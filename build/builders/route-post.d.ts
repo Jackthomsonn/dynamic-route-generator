@@ -1,8 +1,6 @@
-import { IOptions } from './../interfaces/IOptions';
-import { IRoute } from './../interfaces/IRoute';
-import { RouteBuilder } from '../route-builder';
+import { RouteBuilder } from '../route/route-builder';
 declare class BuildPostRoute extends RouteBuilder {
-    constructor(method: string, route: IRoute, options: IOptions);
+    constructor(method: string, route: IRouteGenerator.IRoute, options: IRouteGenerator.IOptions);
     buildPostRoute(): void;
 }
 export { BuildPostRoute };
