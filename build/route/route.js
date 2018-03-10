@@ -7,6 +7,7 @@ const route_get_1 = require("../builders/route.get");
 const error_1 = require("../error");
 class Route {
     constructor(options, route) {
+        this.validMethodNames = ['post', 'get', 'put', 'delete'];
         this.options = options;
         this.route = route;
         this.create();
@@ -19,6 +20,12 @@ class Route {
                 }
                 else {
                     this.route.methods.forEach(method => {
+                        if (!method.name) {
+                            error_1.ErrorHandler.handleError(new Error(`You have not added a name for your method please choose from either ${this.validMethodNames}`));
+                        }
+                        else if (!this.isMethodNameValid(method)) {
+                            error_1.ErrorHandler.handleError(new Error(`You have supplied an invalid method name. Available options are ${this.validMethodNames}`));
+                        }
                         switch (method.name) {
                             case 'post':
                                 new route_post_1.BuildPostRoute(method.name, this.route, this.options);
@@ -40,6 +47,9 @@ class Route {
         catch (error) {
             error_1.ErrorHandler.handleError(error);
         }
+    }
+    isMethodNameValid(method) {
+        return this.validMethodNames.indexOf(method.name) > -1;
     }
     uriPathIsPresent(route) {
         if (!route.uri) {

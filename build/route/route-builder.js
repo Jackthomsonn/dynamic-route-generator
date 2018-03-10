@@ -10,7 +10,7 @@ class RouteBuilder {
         this.generatedRoutes = express_1.Router();
         this.applyGeneratedRoutes();
     }
-    getHandlersForRoute(route, methodName) {
+    setHandlersForRouteMethod(route, methodName) {
         const handlers = [];
         if (route.methods && route.methods.length) {
             route.methods.forEach((method) => {

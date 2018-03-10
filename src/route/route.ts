@@ -7,6 +7,7 @@ import { ErrorHandler } from '../error'
 class Route {
   private options: IRouteGenerator.IOptions
   private route: IRouteGenerator.IRoute
+  private validMethodNames: Array<string> = ['post', 'get', 'put', 'delete']
 
   constructor(options: IRouteGenerator.IOptions, route: IRouteGenerator.IRoute) {
     this.options = options
@@ -22,6 +23,16 @@ class Route {
           new BuildGetRoute('get', this.route, this.options)
         } else {
           this.route.methods.forEach(method => {
+            if (!method.name) {
+              ErrorHandler.handleError(
+                new Error(`You have not added a name for your method please choose from either ${this.validMethodNames}`)
+              )
+            } else if (!this.isMethodNameValid(method)) {
+              ErrorHandler.handleError(
+                new Error(`You have supplied an invalid method name. Available options are ${this.validMethodNames}`)
+              )
+            }
+
             switch (method.name) {
               case 'post':
                 new BuildPostRoute(method.name, this.route, this.options)
@@ -42,6 +53,10 @@ class Route {
     } catch (error) {
       ErrorHandler.handleError(error)
     }
+  }
+
+  private isMethodNameValid(method: IRouteGenerator.IMethod) {
+    return this.validMethodNames.indexOf(method.name) > -1
   }
 
   private uriPathIsPresent(route: IRouteGenerator.IRoute) {

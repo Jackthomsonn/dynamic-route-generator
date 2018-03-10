@@ -7,7 +7,7 @@ class BuildGetRoute extends route_builder_1.RouteBuilder {
         this.buildGetRoute();
     }
     buildGetRoute() {
-        this.generatedRoutes[this.method]([this.route.uri, this.route.uri + '/:id'], this.getHandlersForRoute(this.route, 'get'), (req, res) => {
+        this.generatedRoutes[this.method]([this.route.uri, this.route.uri + '/:id'], this.setHandlersForRouteMethod(this.route, 'get'), (req, res) => {
             if (req.params && req.params.id) {
                 this.route.model.findById(req.params.id).then((document) => {
                     res.status(200).send(document);

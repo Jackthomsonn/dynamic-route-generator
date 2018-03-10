@@ -17,7 +17,7 @@ class RouteBuilder {
     this.applyGeneratedRoutes()
   }
 
-  protected getHandlersForRoute(route: IRouteGenerator.IRoute, methodName: string) {
+  protected setHandlersForRouteMethod(route: IRouteGenerator.IRoute, methodName: string) {
     const handlers: Array<any> = []
 
     if (route.methods && route.methods.length) {

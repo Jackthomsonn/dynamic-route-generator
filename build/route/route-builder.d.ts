@@ -6,7 +6,7 @@ declare class RouteBuilder {
     protected generatedRoutes: IRouter<string>;
     protected options: IRouteGenerator.IOptions;
     constructor(method: string, route: IRouteGenerator.IRoute, options: IRouteGenerator.IOptions);
-    protected getHandlersForRoute(route: IRouteGenerator.IRoute, methodName: string): any[];
+    protected setHandlersForRouteMethod(route: IRouteGenerator.IRoute, methodName: string): any[];
     private applyGeneratedRoutes();
 }
 export { RouteBuilder };

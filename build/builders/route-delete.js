@@ -7,7 +7,7 @@ class BuildDeleteRoute extends route_builder_1.RouteBuilder {
         this.buildDeleteRoute();
     }
     buildDeleteRoute() {
-        this.generatedRoutes[this.method](this.route.uri + '/:id', this.getHandlersForRoute(this.route, this.method), (req, res) => {
+        this.generatedRoutes[this.method](this.route.uri + '/:id', this.setHandlersForRouteMethod(this.route, this.method), (req, res) => {
             this.route.model.remove({ _id: req.params.id }).then(() => {
                 res.status(200).send({
                     message: 'Document removed'

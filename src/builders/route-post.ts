@@ -8,7 +8,7 @@ class BuildPostRoute extends RouteBuilder {
   }
 
   public buildPostRoute() {
-    (this.generatedRoutes as any)[this.method](this.route.uri, this.getHandlersForRoute(this.route, this.method), (req: Request, res: Response) => {
+    (this.generatedRoutes as any)[this.method](this.route.uri, this.setHandlersForRouteMethod(this.route, this.method), (req: Request, res: Response) => {
       this.route.model.create(req.body).then(() => {
         res.status(200).send({
           message: 'Document created'
