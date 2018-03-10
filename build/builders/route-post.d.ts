@@ -1,9 +1,8 @@
-/// <reference types="express" />
+import { IOptions } from './../interfaces/IOptions';
 import { IRoute } from './../interfaces/IRoute';
 import { RouteBuilder } from '../route-builder';
-import { IRouter } from 'express';
 declare class BuildPostRoute extends RouteBuilder {
-    constructor(method: string, route: IRoute, generatedRoutes: IRouter<any>);
+    constructor(method: string, route: IRoute, options: IOptions);
     buildPostRoute(): void;
 }
 export { BuildPostRoute };

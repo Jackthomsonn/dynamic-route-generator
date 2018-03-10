@@ -1,7 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const bodyParser = require("body-parser");
 const chalk_1 = require("chalk");
 const route_post_1 = require("./builders/route-post");
 const route_get_1 = require("./builders/route.get");
@@ -10,13 +8,11 @@ const route_delete_1 = require("./builders/route-delete");
 class RouteGenerator {
     constructor(options) {
         this.options = options;
-        this.generatedRoutes = express_1.Router();
         this.instantiate();
     }
     instantiate() {
         try {
             if (this.appInstanceIsPresent() && this.routesArePresent()) {
-                this.setDefaults();
                 this.options.routes.forEach(route => this.createRoute(route));
             }
         }
@@ -48,38 +44,26 @@ class RouteGenerator {
         }
         return true;
     }
-    setDefaults() {
-        this.options.app.use(bodyParser.json());
-        this.setBaseUri();
-    }
-    setBaseUri() {
-        if (this.options.baseUri) {
-            this.options.app.use(this.options.baseUri, this.generatedRoutes);
-        }
-        else {
-            this.options.app.use('/api', this.generatedRoutes);
-        }
-    }
     createRoute(route) {
         try {
             if (this.uriPathIsPresent(route) && this.routeModelIsPresent(route)) {
                 if (route.methods && route.methods.length === 0 || !route.methods) {
-                    new route_get_1.BuildGetRoute('get', route, this.generatedRoutes);
+                    new route_get_1.BuildGetRoute('get', route, this.options);
                 }
                 else {
                     route.methods.forEach((method) => {
                         switch (method) {
                             case 'post':
-                                new route_post_1.BuildPostRoute(method, route, this.generatedRoutes);
+                                new route_post_1.BuildPostRoute(method, route, this.options);
                                 break;
                             case 'get':
-                                new route_get_1.BuildGetRoute(method, route, this.generatedRoutes);
+                                new route_get_1.BuildGetRoute(method, route, this.options);
                                 break;
                             case 'put':
-                                new route_put_1.BuildPutRoute(method, route, this.generatedRoutes);
+                                new route_put_1.BuildPutRoute(method, route, this.options);
                                 break;
                             case 'delete':
-                                new route_delete_1.BuildDeleteRoute(method, route, this.generatedRoutes);
+                                new route_delete_1.BuildDeleteRoute(method, route, this.options);
                                 break;
                         }
                     });

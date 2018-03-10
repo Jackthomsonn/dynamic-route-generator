@@ -1,12 +1,11 @@
+import { IOptions } from './../interfaces/IOptions';
 import { IRoute } from './../interfaces/IRoute'
 import { RouteBuilder } from '../route-builder'
 import { Request, Response } from 'express'
 
-import { IRouter } from 'express'
-
 class BuildPostRoute extends RouteBuilder {
-  constructor(method: string, route: IRoute, generatedRoutes: IRouter<any>) {
-    super(method, route, generatedRoutes)
+  constructor(method: string, route: IRoute, options: IOptions) {
+    super(method, route, options)
     this.buildPostRoute()
   }
 

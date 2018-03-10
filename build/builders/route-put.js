@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const route_builder_1 = require("../route-builder");
 class BuildPutRoute extends route_builder_1.RouteBuilder {
-    constructor(method, route, generatedRoutes) {
-        super(method, route, generatedRoutes);
+    constructor(method, route, options) {
+        super(method, route, options);
         this.buildPutRoute();
     }
     buildPutRoute() {

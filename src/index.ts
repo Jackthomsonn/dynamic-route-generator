@@ -1,5 +1,3 @@
-import { Router, IRouter } from 'express'
-import * as bodyParser from 'body-parser'
 import chalk from 'chalk'
 
 import { IOptions } from './interfaces/IOptions'
@@ -11,19 +9,15 @@ import { BuildDeleteRoute } from './builders/route-delete'
 
 class RouteGenerator {
   private options: IOptions
-  private generatedRoutes: IRouter<any>
 
   constructor(options: IOptions) {
     this.options = options
-    this.generatedRoutes = Router()
     this.instantiate()
   }
 
   private instantiate() {
     try {
       if (this.appInstanceIsPresent() && this.routesArePresent()) {
-        this.setDefaults()
-
         this.options.routes.forEach(route => this.createRoute(route))
       }
     } catch (error) {
@@ -63,38 +57,25 @@ class RouteGenerator {
     return true
   }
 
-  private setDefaults() {
-    this.options.app.use(bodyParser.json())
-    this.setBaseUri()
-  }
-
-  private setBaseUri() {
-    if (this.options.baseUri) {
-      this.options.app.use(this.options.baseUri, this.generatedRoutes)
-    } else {
-      this.options.app.use('/api', this.generatedRoutes)
-    }
-  }
-
   private createRoute(route: IRoute) {
     try {
       if (this.uriPathIsPresent(route) && this.routeModelIsPresent(route)) {
         if (route.methods && route.methods.length === 0 || !route.methods) {
-          new BuildGetRoute('get', route, this.generatedRoutes)
+          new BuildGetRoute('get', route, this.options)
         } else {
           route.methods.forEach((method: string) => {
             switch (method) {
               case 'post':
-                new BuildPostRoute(method, route, this.generatedRoutes)
+                new BuildPostRoute(method, route, this.options)
                 break
               case 'get':
-                new BuildGetRoute(method, route, this.generatedRoutes)
+                new BuildGetRoute(method, route, this.options)
                 break
               case 'put':
-                new BuildPutRoute(method, route, this.generatedRoutes)
+                new BuildPutRoute(method, route, this.options)
                 break
               case 'delete':
-                new BuildDeleteRoute(method, route, this.generatedRoutes)
+                new BuildDeleteRoute(method, route, this.options)
                 break
             }
           })
