@@ -40,8 +40,13 @@ const routes = [
   {
     uri: '/list/games',
     model: GameModel,
-    handlers: [],
-    methods: ['get', 'post', 'put', 'delete']
+    methods: [{
+      name: 'get',
+      handlers: []
+    }, {
+      name: 'post',
+      handlers: []
+    }]
   }, {
     uri: '/live/games',
     model: GameModel
@@ -62,12 +67,11 @@ app.listen(8080)
 
 #### Routes API
 
-| Property      | Default       | Information                                                                        |
-| ------------- |-------------  | ---------------------------------------------------------------------------------- |
-| uri           | none          | The uri for the route you are creating                                             |
-| model         | none          | The data model that represents the object for this route                           |
-| handlers      | none          | Any middlware that needs to be present on this route, for example Authentication   |
-| methods       | GET           | Methods you want to be avaiable to this route                                      |
+| Property      | Default         | Information                                                                        |
+| ------------- |---------------- | ---------------------------------------------------------------------------------- |
+| uri           | none            | The uri for the route you are creating                                             |
+| model         | none            | The data model that represents the object for this route                           |
+| methods       | []              | Methods you want to be avaiable to this route along with any handlers. An example of a handler could be that of an authentication check|
 
 #### Route Generator API
 
