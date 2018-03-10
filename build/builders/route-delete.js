@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const route_builder_1 = require("../route/route-builder");
+const route_builder_1 = require("./route-builder");
 class BuildDeleteRoute extends route_builder_1.RouteBuilder {
     constructor(method, route, options) {
         super(method, route, options);

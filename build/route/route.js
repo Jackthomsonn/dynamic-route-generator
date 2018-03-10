@@ -15,32 +15,28 @@ class Route {
     create() {
         try {
             if (this.uriPathIsPresent(this.route) && this.routeModelIsPresent(this.route)) {
-                if (this.route.methods && this.route.methods.length === 0 || !this.route.methods) {
-                    new route_get_1.BuildGetRoute('get', this.route, this.options);
-                }
-                else {
+                if (this.routeMethodsAreAvailable()) {
                     this.route.methods.forEach(method => {
-                        if (!method.name) {
-                            error_1.ErrorHandler.handleError(new Error(`You have not added a name for your method please choose from either ${this.validMethodNames}`));
-                        }
-                        else if (!this.isMethodNameValid(method)) {
-                            error_1.ErrorHandler.handleError(new Error(`You have supplied an invalid method name. Available options are ${this.validMethodNames}`));
-                        }
-                        switch (method.name) {
-                            case 'post':
-                                new route_post_1.BuildPostRoute(method.name, this.route, this.options);
-                                break;
-                            case 'get':
-                                new route_get_1.BuildGetRoute(method.name, this.route, this.options);
-                                break;
-                            case 'put':
-                                new route_put_1.BuildPutRoute(method.name, this.route, this.options);
-                                break;
-                            case 'delete':
-                                new route_delete_1.BuildDeleteRoute(method.name, this.route, this.options);
-                                break;
+                        if (this.methodNameIsPresent(method) && this.methodNameIsValid(method)) {
+                            switch (method.name) {
+                                case 'post':
+                                    new route_post_1.BuildPostRoute(method.name, this.route, this.options);
+                                    break;
+                                case 'get':
+                                    new route_get_1.BuildGetRoute(method.name, this.route, this.options);
+                                    break;
+                                case 'put':
+                                    new route_put_1.BuildPutRoute(method.name, this.route, this.options);
+                                    break;
+                                case 'delete':
+                                    new route_delete_1.BuildDeleteRoute(method.name, this.route, this.options);
+                                    break;
+                            }
                         }
                     });
+                }
+                else {
+                    new route_get_1.BuildGetRoute('get', this.route, this.options);
                 }
             }
         }
@@ -48,8 +44,20 @@ class Route {
             error_1.ErrorHandler.handleError(error);
         }
     }
-    isMethodNameValid(method) {
-        return this.validMethodNames.indexOf(method.name) > -1;
+    methodNameIsPresent(method) {
+        if (!method.name) {
+            throw new Error(`You must supply a method name. Available options are ${this.validMethodNames}`);
+        }
+        return true;
+    }
+    methodNameIsValid(method) {
+        if (!(this.validMethodNames.indexOf(method.name) > -1)) {
+            throw new Error(`You must supply a valid method name. Available options are ${this.validMethodNames}`);
+        }
+        return true;
+    }
+    routeMethodsAreAvailable() {
+        return this.route.methods && this.route.methods.length > 0;
     }
     uriPathIsPresent(route) {
         if (!route.uri) {

@@ -1,6 +1,6 @@
 
 import { Request, Response } from 'express'
-import { RouteBuilder } from '../route/route-builder'
+import { RouteBuilder } from './route-builder'
 
 class BuildPutRoute extends RouteBuilder {
   constructor(method: string, route: IRouteGenerator.IRoute, options: IRouteGenerator.IOptions) {

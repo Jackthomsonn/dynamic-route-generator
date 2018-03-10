@@ -19,35 +19,27 @@ class Route {
   public create() {
     try {
       if (this.uriPathIsPresent(this.route) && this.routeModelIsPresent(this.route)) {
-        if (this.route.methods && this.route.methods.length === 0 || !this.route.methods) {
-          new BuildGetRoute('get', this.route, this.options)
-        } else {
+        if (this.routeMethodsAreAvailable()) {
           this.route.methods.forEach(method => {
-            if (!method.name) {
-              ErrorHandler.handleError(
-                new Error(`You have not added a name for your method please choose from either ${this.validMethodNames}`)
-              )
-            } else if (!this.isMethodNameValid(method)) {
-              ErrorHandler.handleError(
-                new Error(`You have supplied an invalid method name. Available options are ${this.validMethodNames}`)
-              )
-            }
-
-            switch (method.name) {
-              case 'post':
-                new BuildPostRoute(method.name, this.route, this.options)
-                break
-              case 'get':
-                new BuildGetRoute(method.name, this.route, this.options)
-                break
-              case 'put':
-                new BuildPutRoute(method.name, this.route, this.options)
-                break
-              case 'delete':
-                new BuildDeleteRoute(method.name, this.route, this.options)
-                break
+            if (this.methodNameIsPresent(method) && this.methodNameIsValid(method)) {
+              switch (method.name) {
+                case 'post':
+                  new BuildPostRoute(method.name, this.route, this.options)
+                  break
+                case 'get':
+                  new BuildGetRoute(method.name, this.route, this.options)
+                  break
+                case 'put':
+                  new BuildPutRoute(method.name, this.route, this.options)
+                  break
+                case 'delete':
+                  new BuildDeleteRoute(method.name, this.route, this.options)
+                  break
+              }
             }
           })
+        } else {
+          new BuildGetRoute('get', this.route, this.options)
         }
       }
     } catch (error) {
@@ -55,8 +47,24 @@ class Route {
     }
   }
 
-  private isMethodNameValid(method: IRouteGenerator.IMethod) {
-    return this.validMethodNames.indexOf(method.name) > -1
+  private methodNameIsPresent(method: IRouteGenerator.IMethod) {
+    if (!method.name) {
+      throw new Error(`You must supply a method name. Available options are ${this.validMethodNames}`)
+    }
+
+    return true
+  }
+
+  private methodNameIsValid(method: IRouteGenerator.IMethod) {
+    if (!(this.validMethodNames.indexOf(method.name) > -1)) {
+      throw new Error(`You must supply a valid method name. Available options are ${this.validMethodNames}`)
+    }
+
+    return true
+  }
+
+  private routeMethodsAreAvailable() {
+    return this.route.methods && this.route.methods.length > 0
   }
 
   private uriPathIsPresent(route: IRouteGenerator.IRoute) {
