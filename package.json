@@ -1,6 +1,6 @@
 {
-  "name": "route-generator",
-  "version": "1.0.0",
+  "name": "dynamic-route-generator",
+  "version": "1.0.1",
   "description": "Generate REST endpoints for your application dynamically",
   "scripts": {
     "build": "yarn && tsc"
