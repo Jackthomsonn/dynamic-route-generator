@@ -1,4 +1,4 @@
-# route-generation
+# dynamic-route-generator
 Dynamically generate REST endpoints for your application
 
 ## How to use
