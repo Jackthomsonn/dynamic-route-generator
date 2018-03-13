@@ -1,16 +1,18 @@
-import * as events from 'events'
 import { ErrorHandler } from './error'
+import { PluginSupport } from './plugin-support';
 import { Route } from './route/route'
 
 class RouteGenerator {
   private options: IRouteGenerator.IOptions
-  private event: events.EventEmitter
-  private installedPlugins: Array<any> = []
 
   constructor(options: IRouteGenerator.IOptions) {
-    this.options = options
-    this.event = new events.EventEmitter()
-    this.notifyPluginInstalled()
+    this.options = {
+      app: undefined,
+      baseUri: '/api',
+      plugins: [],
+      routes: [], ...options
+    }
+
     this.instantiate()
   }
 
@@ -20,11 +22,8 @@ class RouteGenerator {
         this.options.routes.forEach(route => new Route(this.options, route))
       }
 
-      this.installPlugins()
+      new PluginSupport(this.options)
 
-      this.installedPlugins.forEach(plugin => {
-        plugin.execute(this)
-      })
     } catch (error) {
       ErrorHandler.handleError(error)
     }
@@ -39,26 +38,11 @@ class RouteGenerator {
   }
 
   private routesArePresent() {
-    if (!this.options.routes || this.options.routes.length === 0) {
+    if (this.options.routes.length === 0) {
       throw new Error('Your must provide at least one route')
     }
 
     return true
-  }
-
-  private installPlugins() {
-    if (this.options.plugins && this.options.plugins.length > 0) {
-      this.options.plugins.forEach(plugin => {
-        new plugin().install(this.event)
-      })
-    }
-  }
-
-  private notifyPluginInstalled() {
-    this.event.on('Plugin Installed', (pluginName: string, plugin: any) => {
-      process.stdout.write(`${pluginName} was installed successfully`)
-      this.installedPlugins.push(plugin)
-    })
   }
 }
 
