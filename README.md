@@ -79,3 +79,19 @@ app.listen(8080)
 | uri           | none            | The uri for the route you are creating                                             |
 | model         | none            | The data model that represents the object for this route                           |
 | methods       | If you do not specify any methods it will default to creating a GET route                            | Methods you want to be avaiable for this route along with any handlers. An example of a handler could be that of an authentication check|
+
+## Develop custom plugins
+
+If you would like to create your own custom plugins, take a look at [api-docs](https://github.com/Jackthomsonn/dynamic-api-docs) example
+
+### API Definition
+
+**Properties**
+
+`pluginInformation` - A static method that returns an object containing information about your plugin. As of v1.1.0 the only property used internally is the name property
+
+**Methods**
+
+`install` - A static method that simply executes a command 'Plugin Installed' and internally, will execute the given code in the 'apply' method
+
+`apply` - A static method that executes your plugins code. The apply method gives you access to the routes object as the first argument
