@@ -8,7 +8,7 @@
   "main": "build/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Jackthomsonn/route-generator.git"
+    "url": "git+https://github.com/Jackthomsonn/dynamic-route-generator.git"
   },
   "keywords": [
     "rest",
