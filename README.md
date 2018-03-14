@@ -86,12 +86,8 @@ If you would like to create your own custom plugins, take a look at [api-docs](h
 
 ### API Definition
 
-**Properties**
-
-`pluginInformation` - A static method that returns an object containing information about your plugin. As of v1.1.0 the only property used internally is the name property
-
 **Methods**
 
 `install` - A static method that simply executes an event named 'Plugin Installed' and internally, will execute the given code in the 'apply' method
 
-`apply` - A static method that executes your plugins code. The apply method gives you access to the routes object as the first argument
+`apply` - A method that executes your plugins code. The apply method gives you access to the routes object as the first argument

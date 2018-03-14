@@ -3,12 +3,10 @@ import * as events from 'events'
 class PluginSupport {
   private options: IRouteGenerator.IOptions
   private event: events.EventEmitter
-  private pluginStore: Array<any>
 
   constructor(options: IRouteGenerator.IOptions) {
     this.options = options
     this.event = new events.EventEmitter()
-    this.pluginStore = []
 
     this.installPlugins()
   }
@@ -16,17 +14,14 @@ class PluginSupport {
   private installPlugins() {
     this.notifyPluginInstalled()
 
-    if (this.options.plugins.length > 0) {
-      this.options.plugins.forEach(plugin => {
-        plugin.install(this.event)
-      })
+    if (this.options.plugins.length) {
+      this.options.plugins.forEach(plugin => { plugin.install(this.event) })
     }
   }
 
   private notifyPluginInstalled() {
-    this.event.on('Plugin Installed', (pluginInformation: any, plugin: any) => {
-      this.pluginStore.push(pluginInformation)
-      this.instantiatePlugin(plugin)
+    this.event.on('Plugin Installed', (plugin: any) => {
+      this.instantiatePlugin(new plugin())
     })
   }
 

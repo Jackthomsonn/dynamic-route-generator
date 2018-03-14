@@ -5,21 +5,17 @@ class PluginSupport {
     constructor(options) {
         this.options = options;
         this.event = new events.EventEmitter();
-        this.pluginStore = [];
         this.installPlugins();
     }
     installPlugins() {
         this.notifyPluginInstalled();
-        if (this.options.plugins.length > 0) {
-            this.options.plugins.forEach(plugin => {
-                plugin.install(this.event);
-            });
+        if (this.options.plugins.length) {
+            this.options.plugins.forEach(plugin => { plugin.install(this.event); });
         }
     }
     notifyPluginInstalled() {
-        this.event.on('Plugin Installed', (pluginInformation, plugin) => {
-            this.pluginStore.push(pluginInformation);
-            this.instantiatePlugin(plugin);
+        this.event.on('Plugin Installed', (plugin) => {
+            this.instantiatePlugin(new plugin());
         });
     }
     instantiatePlugin(plugin) {
