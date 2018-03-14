@@ -5,6 +5,7 @@ class PluginSupport {
     constructor(options) {
         this.options = options;
         this.event = new events.EventEmitter();
+        this.pluginStore = [];
         this.installPlugins();
     }
     installPlugins() {
@@ -17,7 +18,7 @@ class PluginSupport {
     }
     notifyPluginInstalled() {
         this.event.on('Plugin Installed', (pluginInformation, plugin) => {
-            process.stdout.write(`${pluginInformation.name} was installed successfully`);
+            this.pluginStore.push(pluginInformation);
             this.instantiatePlugin(plugin);
         });
     }

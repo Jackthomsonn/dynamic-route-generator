@@ -3,10 +3,12 @@ import * as events from 'events'
 class PluginSupport {
   private options: IRouteGenerator.IOptions
   private event: events.EventEmitter
+  private pluginStore: Array<any>
 
   constructor(options: IRouteGenerator.IOptions) {
     this.options = options
     this.event = new events.EventEmitter()
+    this.pluginStore = []
 
     this.installPlugins()
   }
@@ -23,7 +25,7 @@ class PluginSupport {
 
   private notifyPluginInstalled() {
     this.event.on('Plugin Installed', (pluginInformation: any, plugin: any) => {
-      process.stdout.write(`${pluginInformation.name} was installed successfully`)
+      this.pluginStore.push(pluginInformation)
       this.instantiatePlugin(plugin)
     })
   }
