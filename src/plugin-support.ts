@@ -15,7 +15,7 @@ class PluginSupport {
     this.notifyPluginInstalled()
 
     if (this.options.plugins.length) {
-      this.options.plugins.forEach(plugin => { plugin.install(this.event) })
+      this.options.plugins.forEach(plugin => plugin.install(this.event))
     }
   }
 
