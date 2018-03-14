@@ -31,7 +31,7 @@ module.exports = mongoose.model('GameModel', gameSchema)
 const express = require('express')
 const mongoose = require('mongoose')
 const GameModel = require('./models/game.model')
-const { RouteGenerator } = require('route-generation')
+const { RouteGenerator } = require('dynamic-route-generator')
 const app = new express()
 
 mongoose.connect('mongodb://localhost/test')
