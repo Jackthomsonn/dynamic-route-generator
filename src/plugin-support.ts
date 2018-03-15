@@ -1,4 +1,5 @@
 import * as events from 'events'
+import { ErrorHandler } from './error';
 
 class PluginSupport {
   private options: IRouteGenerator.IOptions
@@ -15,7 +16,13 @@ class PluginSupport {
     this.notifyPluginInstalled()
 
     if (this.options.plugins.length) {
-      this.options.plugins.forEach(plugin => plugin.install(this.event))
+      this.options.plugins.forEach(plugin => {
+        try {
+          plugin.install(this.event)
+        } catch (error) {
+          ErrorHandler.handleError(new Error(`An error occurred in ${plugin.name}: ${error.stack}`))
+        }
+      })
     }
   }
 
