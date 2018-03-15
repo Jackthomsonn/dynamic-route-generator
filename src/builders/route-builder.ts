@@ -43,11 +43,8 @@ class RouteBuilder {
   private applyGeneratedRoutes() {
     this.options.app.use(bodyParser.json())
 
-    if (this.options.baseUri) {
-      this.options.app.use(this.options.baseUri, this.generatedRoutes)
-    } else {
-      this.options.app.use('/api', this.generatedRoutes)
-    }
+    this.options.app.use(this.options.baseUri, this.generatedRoutes)
+
   }
 }
 

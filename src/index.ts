@@ -1,11 +1,18 @@
 import { ErrorHandler } from './error'
+import { PluginSupport } from './plugin-support';
 import { Route } from './route/route'
 
 class RouteGenerator {
   private options: IRouteGenerator.IOptions
 
   constructor(options: IRouteGenerator.IOptions) {
-    this.options = options
+    this.options = {
+      app: undefined,
+      baseUri: '/api',
+      plugins: [],
+      routes: [], ...options
+    }
+
     this.instantiate()
   }
 
@@ -14,6 +21,9 @@ class RouteGenerator {
       if (this.appInstanceIsPresent() && this.routesArePresent()) {
         this.options.routes.forEach(route => new Route(this.options, route))
       }
+
+      new PluginSupport(this.options)
+
     } catch (error) {
       ErrorHandler.handleError(error)
     }
@@ -28,7 +38,7 @@ class RouteGenerator {
   }
 
   private routesArePresent() {
-    if (!this.options.routes || this.options.routes.length === 0) {
+    if (this.options.routes.length === 0) {
       throw new Error('Your must provide at least one route')
     }
 
