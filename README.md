@@ -65,11 +65,12 @@ app.listen(8080)
 
 #### Route Generator API
 
-| Property      | Default       | Information                                   |
-| ------------- |-------------  | --------------------------------------------- |
-| routes        |  none         | An array of routes you wish to generate       |
-| app           | none          | The app instance you wish to assign routes to |
-| baseUri       | /api          | The base uri where the api will start from    |
+| Property      | Default       | Information                                                      |
+| ------------- |-------------  | ---------------------------------------------------------------- |
+| routes        |  none         | An array of routes you wish to generate                          |
+| app           | none          | The app instance you wish to assign routes to                    |
+| baseUri       | /api          | The base uri where the api will start from                       |
+| plugins       | none          | An array of third party plugins built for the Route Generator    |
 
 
 #### Routes API
