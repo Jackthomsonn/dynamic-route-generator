@@ -54,7 +54,8 @@ const routes = [{
 new RouteGenerator({
   routes: routes,
   app: app,
-  baseUri: '/api'
+  baseUri: '/api',
+  plugins: []
 })
 
 app.listen(8080)
