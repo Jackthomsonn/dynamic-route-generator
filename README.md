@@ -1,4 +1,4 @@
-# dynamic-route-generator
+ # dynamic-route-generator
 Dynamically generate REST endpoints for your application
 
 ## How to use
@@ -36,12 +36,14 @@ const app = new express()
 
 mongoose.connect('mongodb://localhost/test')
 
+// Creating routes with handlers specific for a route method
+// For example performing an authentication check only on a GET method on a route
 const routes = [{
   uri: '/list/games',
   model: GameModel,
   methods: [{
     name: 'get',
-    handlers: []
+    handlers: [CheckAuthentication]
   },{
     name: 'post',
     handlers: []
@@ -51,10 +53,20 @@ const routes = [{
    model: GameModel
  }]
 
+// Creating routes with global handlers and method names as string literals
+// For example an authentication check which works across all methods on a route
+
+const routes = [{
+  uri: '/list/games',
+  model: GameModel,
+  handlers: [CheckAuthentication],
+  methods: ['get', 'post']
+}]
+
 new RouteGenerator({
   routes: routes,
   app: app,
-  baseUri: '/api',
+  baseUri: '/api', // Default is /
   plugins: []
 })
 
@@ -66,21 +78,33 @@ app.listen(8080)
 
 #### Route Generator API
 
-| Property      | Default       | Information                                                      |
-| ------------- |-------------  | ---------------------------------------------------------------- |
-| routes        |  none         | An array of routes you wish to generate                          |
-| app           | none          | The app instance you wish to assign routes to                    |
-| baseUri       | /api          | The base uri where the api will start from                       |
-| plugins       | none          | An array of third party plugins built for the Route Generator    |
+| Property      | Default Value       | Required | Information                                                      |
+| ------------- |-------------  | -------- | --------------------------------------------------------------- |
+| routes        | none          | True | An array of routes you wish to generate                          |
+| app           | none          | True | The app instance you wish to assign routes to                    |
+| baseUri       | /             | False | The base uri where the api will start from                       |
+| plugins       | none          | False | An array of third party plugins built for the Route Generator    |
 
 
 #### Routes API
 
-| Property      | Default         | Information                                                                        |
-| ------------- |---------------- | ---------------------------------------------------------------------------------- |
-| uri           | none            | The uri for the route you are creating                                             |
-| model         | none            | The data model that represents the object for this route                           |
-| methods       | If you do not specify any methods it will default to creating a GET route                            | Methods you want to be avaiable for this route along with any handlers. An example of a handler could be that of an authentication check|
+| Property      | Default Value        | Required | Information                                                                        |
+| ------------- |---------------- | -------- | --------------------------------------------------------------------------------- |
+| uri           | none            | True |The uri for the route you are creating                                             |
+| model         | none            | True | The data model that represents the object for this route                           |
+| handlers      | []              | False | Global handlers you want to apply to all methods                                   |
+| methods       | ['get']         | False | If you do not specify any methods it will default to creating a GET route; Methods you want to be avaiable for this route along with any handlers. An example of a handler could be that of an authentication check |
+
+```
+methods = [{
+  name: 'get',
+  handlers: []
+}]
+
+- OR -
+
+methods = ['get']
+```
 
 ## Develop custom plugins
 

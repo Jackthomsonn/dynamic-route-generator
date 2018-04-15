@@ -12,9 +12,12 @@ class RouteBuilder {
     }
     setHandlersForRouteMethod(route, methodName) {
         const handlers = [];
+        if (route.handlers) {
+            route.handlers.forEach(handler => handlers.push(handler));
+        }
         if (route.methods && route.methods.length) {
             route.methods.forEach((method) => {
-                if (!method.handlers) {
+                if (!method.handlers && typeof method !== 'string') {
                     method.handlers = [];
                 }
                 if (method.name === methodName) {

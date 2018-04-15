@@ -5,7 +5,7 @@ const plugin_support_1 = require("./plugin-support");
 const route_1 = require("./route/route");
 class RouteGenerator {
     constructor(options) {
-        this.options = Object.assign({ app: undefined, baseUri: '/api', plugins: [], routes: [] }, options);
+        this.options = Object.assign({ app: undefined, baseUri: '/', plugins: [], routes: [] }, options);
         this.instantiate();
     }
     instantiate() {

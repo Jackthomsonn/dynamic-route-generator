@@ -20,10 +20,14 @@ class RouteBuilder {
   protected setHandlersForRouteMethod(route: IRouteGenerator.IRoute, methodName: string) {
     const handlers: Array<any> = []
 
+    if (route.handlers) {
+      route.handlers.forEach(handler => handlers.push(handler))
+    }
+
     if (route.methods && route.methods.length) {
       route.methods.forEach((method: IRouteGenerator.IMethod) => {
 
-        if (!method.handlers) {
+        if (!method.handlers && typeof method !== 'string') {
           method.handlers = []
         }
 

@@ -8,7 +8,7 @@ class RouteGenerator {
   constructor(options: IRouteGenerator.IOptions) {
     this.options = {
       app: undefined,
-      baseUri: '/api',
+      baseUri: '/',
       plugins: [],
       routes: [], ...options
     }

@@ -17,6 +17,9 @@ class Route {
             if (this.uriPathIsPresent(this.route) && this.routeModelIsPresent(this.route)) {
                 if (this.routeMethodsAreAvailable()) {
                     this.route.methods.forEach(method => {
+                        if (!method.name) {
+                            method = this.handleStringLiteralMethodNames(method);
+                        }
                         if (this.methodNameIsPresent(method) && this.methodNameIsValid(method)) {
                             switch (method.name) {
                                 case 'post':
@@ -43,6 +46,9 @@ class Route {
         catch (error) {
             error_1.ErrorHandler.handleError(error);
         }
+    }
+    handleStringLiteralMethodNames(method) {
+        return JSON.parse('{"name": "' + method + '", "handlers": "[]"}');
     }
     methodNameIsPresent(method) {
         if (!method.name) {

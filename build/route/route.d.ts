@@ -4,6 +4,7 @@ declare class Route {
     private validMethodNames;
     constructor(options: IRouteGenerator.IOptions, route: IRouteGenerator.IRoute);
     create(): void;
+    private handleStringLiteralMethodNames(method);
     private methodNameIsPresent(method);
     private methodNameIsValid(method);
     private routeMethodsAreAvailable();
