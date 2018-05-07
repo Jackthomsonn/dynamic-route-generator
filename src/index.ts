@@ -1,11 +1,14 @@
+import * as events from 'events'
 import { ErrorHandler } from './error'
 import { PluginSupport } from './plugin-support';
 import { Route } from './route/route'
 
 class RouteGenerator {
   private options: IRouteGenerator.IOptions
+  private event: events.EventEmitter
 
   constructor(options: IRouteGenerator.IOptions) {
+    this.event = new events.EventEmitter()
     this.options = {
       app: undefined,
       baseUri: '/',
@@ -18,11 +21,13 @@ class RouteGenerator {
 
   private instantiate() {
     try {
+      new PluginSupport(this.options, this.event)
+
       if (this.appInstanceIsPresent() && this.routesArePresent()) {
         this.options.routes.forEach(route => new Route(this.options, route))
       }
 
-      new PluginSupport(this.options)
+      this.event.emit('post-plugins')
 
     } catch (error) {
       ErrorHandler.handleError(error)
@@ -38,12 +43,12 @@ class RouteGenerator {
   }
 
   private routesArePresent() {
-    if (this.options.routes.length === 0) {
-      throw new Error('Your must provide at least one route')
+    if (!this.options.routes) {
+      throw new Error('You must provide a route property')
     }
 
     return true
   }
 }
 
-export { RouteGenerator }
+module.exports = RouteGenerator

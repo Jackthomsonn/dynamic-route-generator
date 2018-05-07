@@ -3,6 +3,9 @@ declare namespace IRouteGenerator {
         routes: Array<IRouteGenerator.IRoute>;
         app: any;
         baseUri: string;
-        plugins: Array<any>;
+        plugins: {
+            pre: Array<any>;
+            post: Array<any>;
+        };
     }
 }

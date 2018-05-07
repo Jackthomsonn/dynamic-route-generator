@@ -5,9 +5,9 @@ class PluginSupport {
   private options: IRouteGenerator.IOptions
   private event: events.EventEmitter
 
-  constructor(options: IRouteGenerator.IOptions) {
+  constructor(options: IRouteGenerator.IOptions, event: events.EventEmitter) {
     this.options = options
-    this.event = new events.EventEmitter()
+    this.event = event
 
     this.installPlugins()
   }
@@ -15,15 +15,31 @@ class PluginSupport {
   private installPlugins() {
     this.notifyPluginInstalled()
 
-    if (this.options.plugins.length) {
-      this.options.plugins.forEach(plugin => {
+    if (this.options.plugins.pre && this.options.plugins.pre.length) {
+      this.options.plugins.pre.forEach(plugin => {
         try {
-          plugin.install(this.event)
+          if (plugin) {
+            plugin.install(this.event)
+          }
         } catch (error) {
           ErrorHandler.handleError(new Error(`An error occurred in ${plugin.name}: ${error.stack}`))
         }
       })
     }
+
+    this.event.on('post-plugins', () => {
+      if (this.options.plugins.post && this.options.plugins.post.length) {
+        this.options.plugins.post.forEach(plugin => {
+          try {
+            if (plugin) {
+              plugin.install(this.event)
+            }
+          } catch (error) {
+            ErrorHandler.handleError(new Error(`An error occurred in ${plugin.name}: ${error.stack}`))
+          }
+        })
+      }
+    })
   }
 
   private notifyPluginInstalled() {

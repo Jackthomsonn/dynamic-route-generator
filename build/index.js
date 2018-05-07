@@ -1,19 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const events = require("events");
 const error_1 = require("./error");
 const plugin_support_1 = require("./plugin-support");
 const route_1 = require("./route/route");
 class RouteGenerator {
     constructor(options) {
+        this.event = new events.EventEmitter();
         this.options = Object.assign({ app: undefined, baseUri: '/', plugins: [], routes: [] }, options);
         this.instantiate();
     }
     instantiate() {
         try {
+            new plugin_support_1.PluginSupport(this.options, this.event);
             if (this.appInstanceIsPresent() && this.routesArePresent()) {
                 this.options.routes.forEach(route => new route_1.Route(this.options, route));
             }
-            new plugin_support_1.PluginSupport(this.options);
+            this.event.emit('post-plugins');
         }
         catch (error) {
             error_1.ErrorHandler.handleError(error);
@@ -26,10 +29,10 @@ class RouteGenerator {
         return true;
     }
     routesArePresent() {
-        if (this.options.routes.length === 0) {
-            throw new Error('Your must provide at least one route');
+        if (!this.options.routes) {
+            throw new Error('You must provide a route property');
         }
         return true;
     }
 }
-exports.RouteGenerator = RouteGenerator;
+module.exports = RouteGenerator;
