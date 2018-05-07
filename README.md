@@ -78,12 +78,19 @@ app.listen(8080)
 
 #### Route Generator API
 
-| Property      | Default Value       | Required | Information                                                      |
-| ------------- |-------------  | -------- | --------------------------------------------------------------- |
-| routes        | none          | True | An array of routes you wish to generate                          |
-| app           | none          | True | The app instance you wish to assign routes to                    |
-| baseUri       | /             | False | The base uri where the api will start from                       |
-| plugins       | none          | False | An array of third party plugins built for the Route Generator    |
+| Property      | Default Value         | Required | Information                                                     |
+| ------------- |---------------------- | -------- | --------------------------------------------------------------- |
+| routes        | none                  | True | An array of routes you wish to generate                             |
+| app           | none                  | True | The app instance you wish to assign routes to                       |
+| baseUri       | /                     | False | The base uri where the api will start from                         |
+| plugins       | none                  | True | Plugins that can be run inside fo the Dynamic Route Generator       |
+
+```
+plugins = {
+  pre: [PluginName],
+  post: [PluginName2, PluginName3]
+}
+```
 
 
 #### Routes API
