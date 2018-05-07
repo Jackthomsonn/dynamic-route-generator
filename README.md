@@ -83,7 +83,7 @@ app.listen(8080)
 | routes        | none                  | True | An array of routes you wish to generate                             |
 | app           | none                  | True | The app instance you wish to assign routes to                       |
 | baseUri       | /                     | False | The base uri where the api will start from                         |
-| plugins       | none                  | True | Plugins that can be run inside fo the Dynamic Route Generator       |
+| plugins       | none                  | True | Plugins that can be run inside of the Dynamic Route Generator       |
 
 ```
 plugins = {
