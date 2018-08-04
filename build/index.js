@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const events = require("events");
 const error_1 = require("./error");
+const exceptions_1 = require("./exceptions");
 const plugin_support_1 = require("./plugin-support");
 const route_1 = require("./route/route");
 class RouteGenerator {
@@ -35,4 +36,11 @@ class RouteGenerator {
         return true;
     }
 }
-module.exports = RouteGenerator;
+module.exports = {
+    BadRequest: exceptions_1.BadRequest,
+    Forbidden: exceptions_1.Forbidden,
+    InternalServerError: exceptions_1.InternalServerError,
+    NotFound: exceptions_1.NotFound,
+    RouteGenerator,
+    Unauthorized: exceptions_1.Unauthorized
+};

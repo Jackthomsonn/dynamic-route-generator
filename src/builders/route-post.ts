@@ -1,4 +1,5 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
+import { BadRequest } from '../exceptions'
 import { RouteBuilder } from './route-builder'
 
 class BuildPostRoute extends RouteBuilder {
@@ -8,15 +9,11 @@ class BuildPostRoute extends RouteBuilder {
   }
 
   public buildPostRoute() {
-    (this.generatedRoutes as any)[this.method](this.route.uri, this.setHandlersForRouteMethod(this.route, this.method), (req: Request, res: Response) => {
+    (this.generatedRoutes as any)[this.method](this.route.uri, this.setHandlersForRouteMethod(this.route, this.method), (req: Request, res: Response, next: NextFunction) => {
       this.route.model.create(req.body).then(() => {
-        res.status(200).send({
-          message: 'Document created'
-        })
+        res.status(200).send()
       }).catch((err: Error) => {
-        res.status(400).send({
-          message: err.message
-        })
+        next(new BadRequest(err.message))
       })
     })
   }

@@ -48,7 +48,6 @@ class RouteBuilder {
     this.options.app.use(bodyParser.json())
 
     this.options.app.use(this.options.baseUri, this.generatedRoutes)
-
   }
 }
 

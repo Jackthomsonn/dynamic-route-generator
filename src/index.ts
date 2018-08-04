@@ -1,5 +1,6 @@
 import * as events from 'events'
 import { ErrorHandler } from './error'
+import { BadRequest, Forbidden, InternalServerError, NotFound, Unauthorized } from './exceptions'
 import { PluginSupport } from './plugin-support';
 import { Route } from './route/route'
 
@@ -51,4 +52,11 @@ class RouteGenerator {
   }
 }
 
-module.exports = RouteGenerator
+module.exports = {
+  BadRequest,
+  Forbidden,
+  InternalServerError,
+  NotFound,
+  RouteGenerator,
+  Unauthorized
+}

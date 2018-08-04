@@ -1,5 +1,6 @@
 
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
+import { NotFound } from '../exceptions';
 import { RouteBuilder } from './route-builder'
 
 class BuildPutRoute extends RouteBuilder {
@@ -9,15 +10,11 @@ class BuildPutRoute extends RouteBuilder {
   }
 
   public buildPutRoute() {
-    (this.generatedRoutes as any)[this.method](this.route.uri + '/:id', this.setHandlersForRouteMethod(this.route, this.method), (req: Request, res: Response) => {
+    (this.generatedRoutes as any)[this.method](this.route.uri + '/:id', this.setHandlersForRouteMethod(this.route, this.method), (req: Request, _res: Response, next: NextFunction) => {
       this.route.model.findOneAndUpdate({ _id: req.params.id }, req.body, { overwrite: true, runValidators: true }).then(() => {
-        res.status(200).send({
-          message: 'Document updated'
-        })
+        next()
       }).catch((err: Error) => {
-        res.status(404).send({
-          message: err.message
-        })
+        next(new NotFound(err.message))
       })
     })
   }
