@@ -3,7 +3,9 @@
   "version": "1.3.0",
   "description": "Generate REST endpoints for your application dynamically",
   "scripts": {
-    "build": "yarn && tsc"
+    "build": "yarn && tsc",
+    "publish-npm:beta": "npm publish --tag=next",
+    "publish-npm:latest": "npm publish --tag=latest"
   },
   "main": "build/index.js",
   "repository": {
