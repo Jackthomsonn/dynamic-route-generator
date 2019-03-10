@@ -5,9 +5,11 @@ class PostgresConnector {
         this.database = database;
         this.database = database;
     }
-    find() {
+    find(query) {
         return new Promise((resolve, reject) => {
-            this.database.findAll().then((d) => {
+            this.database.findAll({
+                where: query
+            }).then((d) => {
                 if (!d) {
                     reject();
                 }

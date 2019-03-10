@@ -5,9 +5,11 @@ export class PostgresConnector implements IRouteGenerator.IDatabaseConnector {
     this.database = database;
   }
 
-  public find(): Promise<any> {
+  public find(query: any | undefined): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.database.findAll().then((d) => {
+      this.database.findAll({
+        where: query
+      }).then((d) => {
         if (!d) {
           reject()
         } else {

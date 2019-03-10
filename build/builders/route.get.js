@@ -22,8 +22,13 @@ class BuildGetRoute extends route_builder_1.RouteBuilder {
                 });
             }
             else {
-                this.route.model.find().then(((documents) => {
-                    res.status(200).send(documents);
+                this.route.model.find(req.query || {}).then(((documents, err) => {
+                    if (err) {
+                        next(new exceptions_1.InternalServerError(err.message));
+                    }
+                    else {
+                        res.status(200).send(documents);
+                    }
                 })).catch((err) => {
                     if (err && err.message) {
                         next(new exceptions_1.NotFound(err.message));

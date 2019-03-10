@@ -1,7 +1,6 @@
-import { NextFunction, Request, Response } from 'express'
-
-import { NotFound } from '../exceptions';
-import { RouteBuilder } from './route-builder'
+import { NextFunction, Request, Response } from 'express';
+import { InternalServerError, NotFound } from '../exceptions';
+import { RouteBuilder } from './route-builder';
 
 class BuildGetRoute extends RouteBuilder {
   constructor(method: string, route: IRouteGenerator.IRoute, options: IRouteGenerator.IOptions) {
@@ -23,8 +22,12 @@ class BuildGetRoute extends RouteBuilder {
           }
         })
       } else {
-        this.route.model.find().then(((documents: Array<Document>) => {
-          res.status(200).send(documents)
+        this.route.model.find(req.query || {}).then(((documents: Array<Document>, err: Error) => {
+          if (err) {
+            next(new InternalServerError(err.message))
+          } else {
+            res.status(200).send(documents)
+          }
         })).catch((err: Error) => {
           if (err && err.message) {
             next(new NotFound(err.message))
@@ -37,4 +40,4 @@ class BuildGetRoute extends RouteBuilder {
   }
 }
 
-export { BuildGetRoute }
+export { BuildGetRoute };
