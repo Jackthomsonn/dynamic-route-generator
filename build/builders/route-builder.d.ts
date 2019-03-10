@@ -1,4 +1,3 @@
-/// <reference types="express" />
 import { IRouter } from 'express';
 declare class RouteBuilder {
     protected method: string;
@@ -7,6 +6,6 @@ declare class RouteBuilder {
     protected options: IRouteGenerator.IOptions;
     constructor(method: string, route: IRouteGenerator.IRoute, options: IRouteGenerator.IOptions);
     protected setHandlersForRouteMethod(route: IRouteGenerator.IRoute, methodName: string): any[];
-    private applyGeneratedRoutes();
+    private applyGeneratedRoutes;
 }
 export { RouteBuilder };

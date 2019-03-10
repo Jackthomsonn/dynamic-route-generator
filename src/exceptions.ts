@@ -3,7 +3,7 @@
 class NotFound extends Error {
   private status: number
 
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message)
     this.message = message ? message : 'Resource not found'
     this.status = 404
@@ -13,7 +13,7 @@ class NotFound extends Error {
 class InternalServerError extends Error {
   private status: number
 
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message)
     this.message = message ? message : 'Internal server error'
     this.status = 500
@@ -23,7 +23,7 @@ class InternalServerError extends Error {
 class Forbidden extends Error {
   private status: number
 
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message)
     this.message = message ? message : 'Forbidden'
     this.status = 403
@@ -33,7 +33,7 @@ class Forbidden extends Error {
 class Unauthorized extends Error {
   private status: number
 
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message)
     this.message = message ? message : 'Unauthorized'
     this.status = 401
@@ -43,7 +43,7 @@ class Unauthorized extends Error {
 class BadRequest extends Error {
   private status: number
 
-  constructor(message: string) {
+  constructor(message?: string) {
     super(message);
     this.message = message ? message : 'Bad request'
     this.status = 400

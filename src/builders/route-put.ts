@@ -10,11 +10,15 @@ class BuildPutRoute extends RouteBuilder {
   }
 
   public buildPutRoute() {
-    (this.generatedRoutes as any)[this.method](this.route.uri + '/:id', this.setHandlersForRouteMethod(this.route, this.method), (req: Request, _res: Response, next: NextFunction) => {
-      this.route.model.findOneAndUpdate({ _id: req.params.id }, req.body, { overwrite: true, runValidators: true }).then(() => {
-        next()
+    (this.generatedRoutes as any)[this.method](this.route.uri + '/:id', this.setHandlersForRouteMethod(this.route, this.method), (req: Request, res: Response, next: NextFunction) => {
+      this.route.model.update(req.params.id, req.body, { overwrite: true, runValidators: true }).then(() => {
+        res.status(200).send()
       }).catch((err: Error) => {
-        next(new NotFound(err.message))
+        if (err && err.message) {
+          next(new NotFound(err.message))
+        } else {
+          next(new NotFound())
+        }
       })
     })
   }

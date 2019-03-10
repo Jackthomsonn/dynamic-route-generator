@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { BadRequest } from '../exceptions'
+import { BadRequest, NotFound } from '../exceptions'
 import { RouteBuilder } from './route-builder'
 
 class BuildPostRoute extends RouteBuilder {
@@ -13,7 +13,11 @@ class BuildPostRoute extends RouteBuilder {
       this.route.model.create(req.body).then(() => {
         res.status(200).send()
       }).catch((err: Error) => {
-        next(new BadRequest(err.message))
+        if (err && err.message) {
+          next(new BadRequest(err.message))
+        } else {
+          next(new NotFound())
+        }
       })
     })
   }

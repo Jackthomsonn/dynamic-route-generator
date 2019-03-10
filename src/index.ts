@@ -13,6 +13,7 @@ class RouteGenerator {
     this.options = {
       app: undefined,
       baseUri: '/',
+      database: options.database || 'mongo',
       plugins: [],
       routes: [], ...options
     }

@@ -4,12 +4,15 @@ const route_delete_1 = require("../builders/route-delete");
 const route_post_1 = require("../builders/route-post");
 const route_put_1 = require("../builders/route-put");
 const route_get_1 = require("../builders/route.get");
+const mongo_connector_1 = require("../connectors/mongo-connector");
+const postgres_connector_1 = require("../connectors/postgres-connector");
 const error_1 = require("../error");
 class Route {
     constructor(options, route) {
         this.validMethodNames = ['post', 'get', 'put', 'delete'];
         this.options = options;
         this.route = route;
+        this.determineDatabaseTypeToUse();
         this.create();
     }
     create() {
@@ -47,6 +50,15 @@ class Route {
             error_1.ErrorHandler.handleError(error);
         }
     }
+    determineDatabaseTypeToUse() {
+        const originalSchema = this.route.model;
+        if (this.options.database === 'postgres') {
+            this.route.model = new postgres_connector_1.PostgresConnector(originalSchema);
+        }
+        if (this.options.database === 'mongo') {
+            this.route.model = new mongo_connector_1.MongoConnector(originalSchema);
+        }
+    }
     handleStringLiteralMethodNames(method) {
         return JSON.parse('{"name": "' + method + '", "handlers": "[]"}');
     }
@@ -73,7 +85,7 @@ class Route {
     }
     routeModelIsPresent(route) {
         if (!route.model) {
-            throw new Error('Your route needs a model');
+            throw new Error('Your route needs a schema');
         }
         return true;
     }

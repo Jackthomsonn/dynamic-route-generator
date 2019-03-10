@@ -4,8 +4,8 @@ declare class PluginSupport {
     private options;
     private event;
     constructor(options: IRouteGenerator.IOptions, event: events.EventEmitter);
-    private installPlugins();
-    private notifyPluginInstalled();
-    private instantiatePlugin(plugin);
+    private installPlugins;
+    private notifyPluginInstalled;
+    private instantiatePlugin;
 }
 export { PluginSupport };

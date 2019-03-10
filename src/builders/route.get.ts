@@ -6,6 +6,7 @@ import { RouteBuilder } from './route-builder'
 class BuildGetRoute extends RouteBuilder {
   constructor(method: string, route: IRouteGenerator.IRoute, options: IRouteGenerator.IOptions) {
     super(method, route, options)
+
     this.buildGetRoute()
   }
 
@@ -15,15 +16,21 @@ class BuildGetRoute extends RouteBuilder {
         this.route.model.findById(req.params.id).then((document: Document) => {
           res.status(200).send(document)
         }).catch((err: Error) => {
-          next(new NotFound(err.message))
+          if (err && err.message) {
+            next(new NotFound(err.message))
+          } else {
+            next(new NotFound())
+          }
         })
       } else {
-        this.route.model.find({}, (err: Error, documents: Array<Document>) => {
-          if (err) {
-            next(new NotFound(err.message))
-          }
-
+        this.route.model.find().then(((documents: Array<Document>) => {
           res.status(200).send(documents)
+        })).catch((err: Error) => {
+          if (err && err.message) {
+            next(new NotFound(err.message))
+          } else {
+            next(new NotFound())
+          }
         })
       }
     })

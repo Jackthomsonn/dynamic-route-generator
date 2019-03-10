@@ -12,7 +12,12 @@ class BuildPostRoute extends route_builder_1.RouteBuilder {
             this.route.model.create(req.body).then(() => {
                 res.status(200).send();
             }).catch((err) => {
-                next(new exceptions_1.BadRequest(err.message));
+                if (err && err.message) {
+                    next(new exceptions_1.BadRequest(err.message));
+                }
+                else {
+                    next(new exceptions_1.NotFound());
+                }
             });
         });
     }

@@ -8,7 +8,7 @@ const route_1 = require("./route/route");
 class RouteGenerator {
     constructor(options) {
         this.event = new events.EventEmitter();
-        this.options = Object.assign({ app: undefined, baseUri: '/', plugins: [], routes: [] }, options);
+        this.options = Object.assign({ app: undefined, baseUri: '/', database: options.database || 'mongo', plugins: [], routes: [] }, options);
         this.instantiate();
     }
     instantiate() {

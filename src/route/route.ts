@@ -2,6 +2,8 @@ import { BuildDeleteRoute } from '../builders/route-delete'
 import { BuildPostRoute } from '../builders/route-post'
 import { BuildPutRoute } from '../builders/route-put'
 import { BuildGetRoute } from '../builders/route.get'
+import { MongoConnector } from '../connectors/mongo-connector';
+import { PostgresConnector } from '../connectors/postgres-connector';
 import { ErrorHandler } from '../error'
 
 class Route {
@@ -12,6 +14,8 @@ class Route {
   constructor(options: IRouteGenerator.IOptions, route: IRouteGenerator.IRoute) {
     this.options = options
     this.route = route
+
+    this.determineDatabaseTypeToUse()
 
     this.create()
   }
@@ -51,6 +55,18 @@ class Route {
     }
   }
 
+  private determineDatabaseTypeToUse() {
+    const originalSchema = this.route.model
+
+    if (this.options.database === 'postgres') {
+      this.route.model = new PostgresConnector(originalSchema);
+    }
+
+    if (this.options.database === 'mongo') {
+      this.route.model = new MongoConnector(originalSchema);
+    }
+  }
+
   private handleStringLiteralMethodNames(method: IRouteGenerator.IMethod) {
     return JSON.parse('{"name": "' + method + '", "handlers": "[]"}')
   }
@@ -85,7 +101,7 @@ class Route {
 
   private routeModelIsPresent(route: IRouteGenerator.IRoute) {
     if (!route.model) {
-      throw new Error('Your route needs a model')
+      throw new Error('Your route needs a schema')
     }
 
     return true

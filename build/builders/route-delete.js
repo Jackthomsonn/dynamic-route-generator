@@ -9,10 +9,15 @@ class BuildDeleteRoute extends route_builder_1.RouteBuilder {
     }
     buildDeleteRoute() {
         this.generatedRoutes[this.method](this.route.uri + '/:id', this.setHandlersForRouteMethod(this.route, this.method), (req, res, next) => {
-            this.route.model.remove({ _id: req.params.id }).then(() => {
+            this.route.model.delete(req.params.id).then(() => {
                 res.status(200).send();
             }).catch((err) => {
-                next(new exceptions_1.NotFound(err.message));
+                if (err && err.message) {
+                    next(new exceptions_1.NotFound(err.message));
+                }
+                else {
+                    next(new exceptions_1.NotFound());
+                }
             });
         });
     }

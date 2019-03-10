@@ -3,74 +3,144 @@ Dynamically generate REST endpoints for your application
 
 ## How to use
 
-##### game.model.js
+##### If using Postgres as your database
 
 ``` javascript
+import { Sequelize, STRING, ARRAY } from "sequelize";
 
-const mongoose = require('mongoose')
+const { RouteGenerator } = require('dynamic-route-generator');
+const Sequelize = require('sequelize')
+const { XAuth } = require('x-auth-plugin')
 
-const gameSchema = new mongoose.Schema({
-  name: {
-    required: true,
-    type: String
-  },
-  playersOnline:{
-    required: true,
-    type: Number
+export class PostgresInstance {
+  constructor(app) { }
+
+  setup() {
+    const sequelize: Sequelize = new Sequelize('testdb', 'admin', '1234', {
+      host: 'localhost',
+      dialect: 'postgres',
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+      },
+      logging: false,
+      operatorsAliases: false
+    });
+
+    const GameModel = sequelize.define('gameschema', {
+      name: {
+        type: STRING,
+        allowNull: false
+      },
+      players: {
+        type: ARRAY(STRING),
+        allowNull: false
+      }
+    })
+
+    sequelize.sync().then(() => {
+      const routes = [{
+        uri: '/list/games',
+        model: GameModel,
+        methods: [{
+          name: 'get'
+        }, {
+          name: 'post'
+        }, {
+          name: 'put'
+        }, {
+          name: 'delete'
+        }]
+      }]
+
+      new RouteGenerator({
+        routes: routes,
+        database: 'postgres',
+        app: this.app,
+        plugins: {
+          pre: [],
+          post: []
+        }
+      })
+
+      this.app.listen(8080)
+    })
   }
-})
+}
 
-module.exports = mongoose.model('GameModel', gameSchema)
+```
+
+##### If using Mongo as your database
+
+``` javascript
+import { Schema, connect, model } from "mongoose";
+
+const { RouteGenerator } = require('dynamic-route-generator');
+
+export class MongoInstance {
+  constructor(app) { }
+
+  setup() {
+    const GameSchema = new Schema({
+      name: {
+        required: true,
+        type: String
+      },
+      playersOnline: {
+        required: true,
+        type: Number
+      }
+    })
+
+    connect('mongodb://localhost/test').then(() => {
+      const routes = [{
+        uri: '/list/games',
+        model: model('GameSchema', GameSchema),
+        methods: [{
+          name: 'get'
+        }, {
+          name: 'post'
+        }, {
+          name: 'put'
+        }, {
+          name: 'delete'
+        }]
+      }]
+
+      new RouteGenerator({
+        routes: routes,
+        database: 'mongo',
+        app: this.app,
+        plugins: {
+          pre: [],
+          post: []
+        }
+      })
+
+      this.app.listen(8080)
+    })
+  }
+}
 
 ```
 
 ##### index.js
 
 ``` javascript
+import express from 'express';
+import { PostgresInstance } from './postgres-setup';
+import { MongoInstance } from './mongo-setup';
 
-const express = require('express')
-const mongoose = require('mongoose')
-const GameModel = require('./models/game.model')
-const RouteGenerator = require('dynamic-route-generator')
-const app = new express()
+const app = express()
+const databaseToUse = process.argv[2].substr(2)
 
-mongoose.connect('mongodb://localhost/test')
-
-// Creating routes with handlers specific for a route method
-// For example performing an authentication check only on a GET method on a route
-const routes = [{
-  uri: '/list/games',
-  model: GameModel,
-  methods: [{
-    name: 'get',
-    handlers: [CheckAuthentication]
-  },{
-    name: 'post',
-    handlers: []
-   }]
- }, {
-   uri: '/live/games',
-   model: GameModel
- }]
-
-// Creating routes with global handlers and method names as string literals
-// For example an authentication check which works across all methods on a route
-
-const routes = [{
-  uri: '/list/games',
-  model: GameModel,
-  handlers: [CheckAuthentication],
-  methods: ['get', 'post']
-}]
-
-new RouteGenerator({
-  routes: routes,
-  app: app,
-  baseUri: '/api', // Default is /
-  plugins: []
-})
-
-app.listen(8080)
+if (databaseToUse === 'postgres') {
+  new PostgresInstance(app).setup();
+} else {
+  new MongoInstance(app).setup();
+}
 
 ```
 
@@ -78,12 +148,13 @@ app.listen(8080)
 
 #### Route Generator API
 
-| Property      | Default Value         | Required | Information                                                     |
-| ------------- |---------------------- | -------- | --------------------------------------------------------------- |
-| routes        | none                  | True | An array of routes you wish to generate                             |
-| app           | none                  | True | The app instance you wish to assign routes to                       |
-| baseUri       | /                     | False | The base uri where the api will start from                         |
-| plugins       | none                  | True | Plugins that can be run inside of the Dynamic Route Generator       |
+| Property      | Default Value         | Required | Information                                                                 |
+| ------------- |---------------------- | -------- | --------------------------------------------------------------------------- |
+| routes        | none                  | True | An array of routes you wish to generate                                         |
+| database      | mongo                 | True | The kind of database you wish to use, currently supports Mongo and Postgres     |
+| app           | none                  | True | The app instance you wish to assign routes to                                   |
+| baseUri       | /                     | False | The base uri where the api will start from                                     |
+| plugins       | none                  | True | Plugins that can be run inside of the Dynamic Route Generator                   |
 
 ```
 plugins = {
@@ -95,11 +166,11 @@ plugins = {
 
 #### Routes API
 
-| Property      | Default Value        | Required | Information                                                                        |
+| Property      | Default Value        | Required | Information                                                                  |
 | ------------- |---------------- | -------- | --------------------------------------------------------------------------------- |
-| uri           | none            | True |The uri for the route you are creating                                             |
-| model         | none            | True | The data model that represents the object for this route                           |
-| handlers      | []              | False | Global handlers you want to apply to all methods                                   |
+| uri           | none            | True |The uri for the route you are creating                                                 |
+| model         | none            | True | The data model that represents the object for this route                              |
+| handlers      | []              | False | Global handlers you want to apply to all methods                                     |
 | methods       | ['get']         | False | If you do not specify any methods it will default to creating a GET route; Methods you want to be avaiable for this route along with any handlers. An example of a handler could be that of an authentication check |
 
 ```
